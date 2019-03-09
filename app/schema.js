@@ -2,21 +2,29 @@ const { gql } = require('apollo-server');
 
 const schema = gql`
   type Query {
-    latestPaymentChecks: [PaymentCheck]!
-    paymentCheck(id: ID!): PaymentCheck    
+    paymentChecks(start: Int!, amount: Int!): PaymentCheckConnection!
+    costs: [Cost]!
   }
   type Mutation {
     pay(check: Int): String
   }
+  type PaymentCheckConnection {
+    cursor: String!
+    hasMore: Boolean!
+    paymentChecks: [PaymentCheck]!
+  }
   type PaymentCheck {
-    id: ID
+    id: Int!
     serviceChecks: [ServiceCheck]!
   }
   type ServiceCheck {
     service: String!
-    prevValue: Int!
     curValue: Int!
-    cost: Float!
+  }
+  type Cost {
+    value: Float!
+    service: String!
+    sincePayment: Int!
   }
 `;
 
