@@ -7,6 +7,16 @@ const schema = gql`
   }
   type Mutation {
     pay(check: Int): String
+    authFacebook(input: AuthInput!): AuthResponse
+    createUser(email: String!): String!
+    loginWithEmail(email: String!, password: String): String!
+  }
+  type AuthResponse {
+    token: String
+    name: String
+  }
+  input AuthInput {
+    accessToken: String!
   }
   type PaymentCheckConnection {
     cursor: String!
