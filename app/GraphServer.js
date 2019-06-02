@@ -1,19 +1,19 @@
 require('dotenv').config();
 const { ApolloServer } = require('apollo-server-express');
+const jwt = require('jsonwebtoken');
 const schema = require('./schema');
 const resolvers = require('./resolvers');
-const passport = require('passport');
 
-const getMe = async req => {
-  const token = req.headers['authorization'];
-  if (!token) return;
+const getMe = async (req) => {
+  const token = req.headers.authorization;
+  if (!token) return undefined;
   try {
     const data = (await jwt.verify(token, process.env.JWT_SECRET));
     return data.id;
   } catch (e) {
-    return undefined;    
+    return undefined;
   }
-}
+};
 
 class GraphServer {
   constructor() {
@@ -25,16 +25,15 @@ class GraphServer {
         return {
           idUser,
           req,
-          res
+          res,
         };
-      }
-  })
-}
+      },
+    });
+  }
 
   getServer() {
     return this.server;
   }
-
 }
 
 module.exports = GraphServer;
