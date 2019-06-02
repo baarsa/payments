@@ -19,7 +19,7 @@ const schema = gql`
     accessToken: String!
   }
   type PaymentCheckConnection {
-    cursor: String!
+    cursor: Int!
     hasMore: Boolean!
     paymentChecks: [PaymentCheck]!
   }

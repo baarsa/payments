@@ -1,23 +1,40 @@
-const { ApolloServer } = require('apollo-server');
+require('dotenv').config();
+const { ApolloServer } = require('apollo-server-express');
 const schema = require('./schema');
 const resolvers = require('./resolvers');
 const passport = require('passport');
 
+const getMe = async req => {
+  const token = req.headers['authorization'];
+  if (!token) return;
+  try {
+    const data = (await jwt.verify(token, process.env.JWT_SECRET));
+    return data.id;
+  } catch (e) {
+    return undefined;    
+  }
+}
+
 class GraphServer {
   constructor() {
     this.server = new ApolloServer({
-       typeDefs: schema,
-       context: async({ req }) => {
-         passport.authenticate('local');
-       },
-       resolvers
-      });
+      typeDefs: schema,
+      resolvers,
+      context: async ({ req, res }) => {
+        const idUser = await getMe(req);
+        return {
+          idUser,
+          req,
+          res
+        };
+      }
+  })
+}
+
+  getServer() {
+    return this.server;
   }
 
-  async run() {
-    await this.server.listen();
-    console.log('graph server listening...');
-  }
 }
 
 module.exports = GraphServer;

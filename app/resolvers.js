@@ -46,8 +46,12 @@ module.exports = {
         };
       }
     },
-    loginWithEmail: async (_, { email, password }) => {
-      const user = await User.getUser({ email, password }); //todo try
+    loginWithEmail: async (_, { email, password }, { req, res }) => {
+      const { err, user } = await new Promise(res => passport.authenticate('local', (err, user) => {
+        res({ err, user });
+      }, err => {
+        console.log(err);
+      })(req, res));
       return jsonwebtoken.sign(
         {id: user.id},
         process.env.JWT_SECRET,
