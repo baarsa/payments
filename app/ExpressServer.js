@@ -1,9 +1,9 @@
-var path = require('path');
+const path = require('path');
 const express = require('express');
 const passport = require('passport');
 require('./auth');
 
-const PORT = 3001; //TODO to env
+const PORT = 3001; // TODO to env
 
 class ExpressServer {
   constructor(graphServer) {
@@ -13,8 +13,9 @@ class ExpressServer {
     this.app.use(passport.session());
     graphServer.getServer().applyMiddleware({
       app: this.app,
-      path: '/graphql'});
-      this.registerRoutes();
+      path: '/graphql',
+    });
+    this.registerRoutes();
   }
 
   registerRoutes() {
@@ -25,7 +26,7 @@ class ExpressServer {
 
   listen() {
     this.app.listen(PORT, () => {
-      console.log(`The server is running on http://localhost:${PORT}`)
+      console.log(`The server is running on http://localhost:${PORT}`);
     });
   }
 }
