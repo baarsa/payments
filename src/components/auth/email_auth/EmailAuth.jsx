@@ -28,7 +28,7 @@ class EmailAuth extends React.Component {
       }
     }); //todo check errors
     localStorage.setItem('token', token);
-    location = '/';
+    //location = '/';
   }
 
   onChangeEmail(e) {

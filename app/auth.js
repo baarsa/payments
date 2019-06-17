@@ -21,9 +21,12 @@ passport.use(new LocalStrategy({
   passwordField: 'password',
   session: false,
 }, async (email, password, done) => {
-  const user = await User.getUser({ email, password });
-  // todo check
+  try {
+  const user = await User.getUser({ email, password });  
   return done(null, user);
+  } catch (e) {
+    return done(e);
+  }
 }));
 
 const jwtOptions = {

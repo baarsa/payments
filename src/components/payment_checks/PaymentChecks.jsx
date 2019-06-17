@@ -1,18 +1,21 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import ReactSwipe from 'react-swipe';
 
 import PaymentCheck from '../payment_check/PaymentCheck';
 
 const PAYMENT_CHECKS = gql`
   query checks {
-    paymentChecks(start: 0, amount: 3) {
-    paymentChecks {
+    payments(count: 3) {    
       id
+      date
       serviceChecks {
-        service,
-        curValue
-      }
+        idService,
+        curValue,
+        prevValue,
+        cost,          
+        name,  
     }
   }
   }
@@ -34,16 +37,27 @@ const PaymentChecks = () => (
     ({loading, error, data}) => {
       if (loading) return <div>Loading...</div>;
       if (error) return <div>error</div>;
-      const paymentChecks = data.paymentChecks.paymentChecks;
-      return [
-        ...(paymentChecks
+      const paymentChecks = data.payments;
+      let reactSwipeEl;
+      return <>
+      <ReactSwipe swipeOptions={{ continuous: false }} ref={el => (reactSwipeEl = el)}>
+        {paymentChecks
           .filter((_, index) => index < paymentChecks.length - 1)
-          .map(check => <PaymentCheck check={getFullCheckData(paymentChecks, check.id)} />))
-      ];
+          .map(check => <PaymentCheck check={check} />)
+        }
+          <PaymentCheck check={newCheck} editable={1} />      
+      </ReactSwipe>
+      <button onClick={() => reactSwipeEl.next()}>Next</button>
+      <button onClick={() => reactSwipeEl.prev()}>Previous</button>
+      </>
     }
   }
   </Query>
 );
+
+const newCheck = {
+  serviceChecks: [], //todo copy from last
+};
 
 const getFullCheckData = (checks, idPayment = null) => {
   const curCheck = checks.filter(check => check.id === idPayment)[0];

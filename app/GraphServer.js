@@ -15,6 +15,7 @@ const getMe = async (req) => {
   }
 };
 
+
 class GraphServer {
   constructor() {
     this.server = new ApolloServer({

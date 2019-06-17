@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser');
 const passport = require('passport');
 require('./auth');
 
@@ -8,9 +9,11 @@ const PORT = 3001; // TODO to env
 class ExpressServer {
   constructor(graphServer) {
     this.app = express();
+    this.app.use(bodyParser.json());
     this.app.use('/', express.static('dist'));
     this.app.use(passport.initialize());
     this.app.use(passport.session());
+
     graphServer.getServer().applyMiddleware({
       app: this.app,
       path: '/graphql',

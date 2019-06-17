@@ -36,7 +36,7 @@ class User {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new Error('Invalid user');
     }
-    return await db('user').where({id: user.id_user});
+    return await db('user').where({id: user.id_user}).first();
   }
 
   static async getUserById(id) {
